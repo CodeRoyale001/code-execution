@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/low4ey/OJ/Golang-backend/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -15,12 +14,8 @@ import (
 var DB_NAME = "test"
 
 func DBSet() *mongo.Client {
-	config, err := config.LoadConfig(".")
-	if err != nil {
-		fmt.Println("Environment Variable Failed Loading in DB")
-		os.Exit(1)
-	}
-	client, err := mongo.NewClient(options.Client().ApplyURI(config.DB_URI))
+	DB_URI := os.Getenv("DB_URI")
+	client, err := mongo.NewClient(options.Client().ApplyURI(DB_URI))
 	if err != nil {
 		log.Fatal(err)
 	}
