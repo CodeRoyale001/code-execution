@@ -10,4 +10,7 @@ func SubmissionRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.GET("/getallsubmission", controllers.GetAllSub())
 	incomingRoutes.GET("/getsubmission/question/:questionId", controllers.GetSubByQuestionId())
 	incomingRoutes.GET("/getsubmission/user/:userId", controllers.GetSubByUserId())
+	incomingRoutes.GET("/ping", func(c *gin.Context) {
+		c.String(200, "Server is up and running :)")
+	})
 }
