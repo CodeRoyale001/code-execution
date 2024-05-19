@@ -28,7 +28,7 @@ func Submit() gin.HandlerFunc {
 			return
 		}
 
-		testcases, testCaserr := getTestCases("http://js_backend:5005/api/getTestCase/" + *submission.QuestionId)
+		testcases, testCaserr := getTestCases("https://serene-fortress-91389-77d1fb95872a.herokuapp.com/api/getTestCase/" + *submission.QuestionId)
 		if testCaserr != nil {
 			fmt.Println("Error in testcase route")
 			c.JSON(http.StatusBadRequest, gin.H{"error": testCaserr.Error()})
