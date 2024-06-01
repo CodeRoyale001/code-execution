@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -12,7 +12,7 @@ import (
 )
 
 func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
-	err := ioutil.WriteFile("./solution.cpp", []byte(codeBody), 0644)
+	err := os.WriteFile("./solution.cpp", []byte(codeBody), 0644)
 	if err != nil {
 		return -1, "", fmt.Errorf("failed to write code to file: %v", err)
 	}

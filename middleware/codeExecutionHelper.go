@@ -62,7 +62,7 @@ func compareFile(fileOne string, fileTwo string) (bool, error) {
 		line1 := strings.TrimSpace(scanner1.Text())
 		line2 := strings.TrimSpace(scanner2.Text())
 
-		if strings.ToLower(line1) != strings.ToLower(line2) {
+		if !strings.EqualFold(line1, line2) {
 			return false, nil
 		}
 	}
@@ -134,7 +134,7 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 			}
 
 			output := outputBuf.String()
-			outputFile.WriteString(output + "\n")
+			outputFile.WriteString(output)
 			lastExecutedIndex = i
 		}
 
