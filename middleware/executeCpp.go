@@ -12,12 +12,12 @@ import (
 )
 
 func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
-	err := os.WriteFile("solution.cpp", []byte(codeBody), 0644)
+	err := os.WriteFile("./solution.cpp", []byte(codeBody), 0644)
 	if err != nil {
 		return -1, "", fmt.Errorf("failed to write code to file: %v", err)
 	}
 
-	err = executeCppFile(" solution.cpp")
+	err = executeCppFile("./solution.cpp")
 	if err != nil {
 		return -1, compileError, fmt.Errorf("failed to execute C++ file: %v", err)
 	}
