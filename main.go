@@ -13,6 +13,12 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	port := os.Getenv("PORT")
+	// config, err := config.LoadConfig(".")
+	// if err != nil {
+	// 	fmt.Println("Environment Variable Failed Loading")
+	// 	os.Exit(1)
+	// }
+	// port := config.PORT
 	fmt.Println("And the Port Is : " + port)
 	if port == "" {
 		port = "8080"
