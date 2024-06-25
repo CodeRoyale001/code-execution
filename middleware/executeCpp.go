@@ -12,12 +12,12 @@ import (
 )
 
 func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
-	err := os.WriteFile("./solution.cpp", []byte(codeBody), 0644)
+	err := os.WriteFile("./files/solution.cpp", []byte(codeBody), 0644)
 	if err != nil {
 		return -1, "", fmt.Errorf("failed to write code to file: %v", err)
 	}
 
-	err = executeCppFile("./solution.cpp")
+	err = executeCppFile("./files/solution.cpp")
 	if err != nil {
 		return -1, compileError, fmt.Errorf("failed to execute C++ file: %v", err)
 	}
@@ -34,7 +34,7 @@ func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
 		return outcome, compileError, fmt.Errorf("failed to run executable: %v", err)
 	}
 	if outcome == len(testcases)-1 {
-		isEqual, err := compareFile("./output.txt", "./expected_output.txt")
+		isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
 		if err != nil {
 			return outcome, "", fmt.Errorf("failed to compare files: %v", err)
 		}

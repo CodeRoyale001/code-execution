@@ -95,7 +95,7 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 		return -1, fmt.Errorf("failed to start executable: %v", err)
 	}
 
-	outputFile, err := os.Create("output.txt")
+	outputFile, err := os.Create("./files/output.txt")
 	if err != nil {
 		return -1, fmt.Errorf("failed to create output file: %v", err)
 	}
@@ -155,7 +155,7 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 }
 
 func WriteOutputToFile(testCases []models.TestCase) error {
-	file, err := os.Create("./expected_output.txt")
+	file, err := os.Create("./files/expected_output.txt")
 	if err != nil {
 		return fmt.Errorf("failed to create file: %v", err)
 	}

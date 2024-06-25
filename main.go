@@ -19,10 +19,10 @@ func main() {
 	// 	os.Exit(1)
 	// }
 	// port := config.PORT
-	fmt.Println("And the Port Is : " + port)
 	if port == "" {
 		port = "8080"
 	}
+	fmt.Println("And the Port Is : " + port)
 	router := gin.Default()
 	router.Use(utils.CORSMiddleware())
 	routes.SubmissionRoutes(router)
