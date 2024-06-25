@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 	"syscall"
@@ -13,16 +13,16 @@ import (
 )
 
 func RunJava(codeBody string, testcases []models.TestCase) (int, string, error) {
-	err := ioutil.WriteFile("./Solution.java", []byte(codeBody), 0644)
+	err := os.WriteFile("./files/Solution.java", []byte(codeBody), 0644)
 	if err != nil {
 		return -1, "", fmt.Errorf("failed to write code to file: %v", err)
 	}
 
-	compErr := compileJava("./Solution.java")
+	compErr := compileJava("./files/Solution.java")
 	if compErr != nil {
 		return -1, "", fmt.Errorf("failed to compile Java code: %v", compErr)
 	}
-	outcome, err := runExecutableWithTimeout("java", "./Solution.java", testcases)
+	outcome, err := runExecutableWithTimeout("java", "./files/Solution.java", testcases)
 	if err != nil {
 		if err == context.DeadlineExceeded {
 			return outcome, timeExceeded, nil
@@ -38,7 +38,7 @@ func RunJava(codeBody string, testcases []models.TestCase) (int, string, error) 
 		return -1, "", fmt.Errorf("no testcases executed during runtime")
 	}
 
-	isEqual, err := compareFile("./output.txt", "./expected_output.txt")
+	isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
 	if err != nil {
 		return outcome, "", fmt.Errorf("failed to compare files: %v", err)
 	}
