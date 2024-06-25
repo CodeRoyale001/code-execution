@@ -4,9 +4,9 @@
 *.so
 *.env
 
-# Executables
-*.exe
-*.out
+# # Executables
+# *.exe
+# *.out
 
 # Go binary
 /bin/
