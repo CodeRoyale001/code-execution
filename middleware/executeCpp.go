@@ -22,7 +22,7 @@ func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
 		return -1, compileError, fmt.Errorf("failed to execute C++ file: %v", err)
 	}
 
-	outcome, err := runExecutableWithTimeout("", "./a.out", testcases)
+	outcome, err := runExecutableWithTimeout("", "./files/a.out", testcases)
 	if err != nil {
 		if err == context.DeadlineExceeded {
 			return outcome, timeExceeded, nil
@@ -47,9 +47,9 @@ func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
 }
 
 func executeCppFile(filePath string) error {
-	cmd := exec.Command("g++", filePath) // Compile the C++ file using g++
-	errOutput := &bytes.Buffer{}         // Buffer to capture the error output
-	cmd.Stderr = errOutput               // Attach the buffer to cmd.Stderr
+	cmd := exec.Command("g++", filePath, "-o", "./files/a.out") // Compile the C++ file using g++
+	errOutput := &bytes.Buffer{}                                // Buffer to capture the error output
+	cmd.Stderr = errOutput                                      // Attach the buffer to cmd.Stderr
 
 	err := cmd.Run()
 	if err != nil {

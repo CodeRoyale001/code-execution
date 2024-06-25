@@ -80,6 +80,7 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 	if compiler != "" {
 		cmd = exec.Command(compiler, fileAddress) // Execute the compiled executable using the specified compiler
 	} else {
+		// cmd = exec.Command("pwd")
 		cmd = exec.Command(fileAddress) // Execute the file directly without a compiler
 	}
 
