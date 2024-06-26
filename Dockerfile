@@ -11,7 +11,7 @@ COPY go.sum .
 # Download the Go module dependencies
 RUN go mod download
 
-COPY .env .env
+# COPY .env .env
 
 # Copy the rest of the project files
 COPY . .
