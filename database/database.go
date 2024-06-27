@@ -14,6 +14,12 @@ import (
 var DB_NAME = "test"
 
 func DBSet() *mongo.Client {
+	// config, err := config.LoadConfig(".")
+	// if err != nil {
+	// 	fmt.Println("Environment Variable Failed Loading")
+	// 	os.Exit(1)
+	// }
+	// DB_URI := config.DB_URI
 	DB_URI := os.Getenv("DB_URI")
 	client, err := mongo.NewClient(options.Client().ApplyURI(DB_URI))
 	if err != nil {

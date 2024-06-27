@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var SubmissionCollection *mongo.Collection = database.SubmissionData(database.Client, "Submission")
@@ -114,12 +116,27 @@ func GetSubByUserId() gin.HandlerFunc {
 
 		userID := c.Param("userId")
 
-		cursor, err := SubmissionCollection.Find(ctx, bson.M{"userid": userID})
+		// Get limit from query string, default to 10 if not provided or invalid
+		limitParam := c.Query("limit")
+		limit, err := strconv.Atoi(limitParam)
+		if err != nil || limit <= 0 {
+			limit = 10 // Default limit if invalid or not provided
+		}
+
+		// Define the filter to get submissions for the userID where status is "CORRECT"
+		filter := bson.M{
+			"userid": userID,
+			"status": "CORRECT",
+		}
+
+		// Define options to limit and sort the results
+		findOptions := options.Find().SetLimit(int64(limit)).SetSort(bson.D{{"_id", -1}}) // Sorting by _id descending
+
+		cursor, err := SubmissionCollection.Find(ctx, filter, findOptions)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
 			return
 		}
-
 		defer cursor.Close(ctx)
 
 		var submissions []models.Submission
