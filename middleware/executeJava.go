@@ -38,13 +38,13 @@ func RunJava(codeBody string, testcases []models.TestCase) (int, string, error) 
 		return -1, "", fmt.Errorf("no testcases executed during runtime")
 	}
 
-	isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
+	lastTestCaseExecuted, isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
 	if err != nil {
-		return outcome, "", fmt.Errorf("failed to compare files: %v", err)
+		return lastTestCaseExecuted, "", fmt.Errorf("failed to compare files: %v", err)
 	}
 
 	if !isEqual {
-		return outcome, wrongAnswer, nil
+		return lastTestCaseExecuted, wrongAnswer, nil
 	}
 
 	return outcome, correctAnswer, nil

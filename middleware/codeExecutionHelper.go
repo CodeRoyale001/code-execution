@@ -42,36 +42,37 @@ func killProcessGroup(cmd *exec.Cmd) {
 	}
 }
 
-func compareFile(fileOne string, fileTwo string) (bool, error) {
+func compareFile(fileOne string, fileTwo string) (int, bool, error) {
 	f1, err := os.Open(fileOne)
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
 	defer f1.Close()
 
 	f2, err := os.Open(fileTwo)
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
 	defer f2.Close()
 
 	scanner1 := bufio.NewScanner(f1)
 	scanner2 := bufio.NewScanner(f2)
-
+	index := 1
 	for scanner1.Scan() && scanner2.Scan() {
 		line1 := strings.TrimSpace(scanner1.Text())
 		line2 := strings.TrimSpace(scanner2.Text())
 
 		if !strings.EqualFold(line1, line2) {
-			return false, nil
+			return index, false, nil
 		}
+		index++
 	}
 
 	if scanner1.Scan() || scanner2.Scan() {
-		return false, nil
+		return index, false, nil
 	}
 
-	return true, nil
+	return index, true, nil
 }
 
 func runExecutableWithTimeout(compiler string, fileAddress string, testCases []models.TestCase) (int, error) {

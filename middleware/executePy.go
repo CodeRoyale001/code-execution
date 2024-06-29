@@ -31,13 +31,13 @@ func RunPython(codeBody string, testCases []models.TestCase) (int, string, error
 		return -1, "", fmt.Errorf("no testcases executed")
 	}
 
-	isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
+	lastExecutedIndex, isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
 	if err != nil {
-		return outcome, "", fmt.Errorf("failed to compare files: %v", err)
+		return lastExecutedIndex, "", fmt.Errorf("failed to compare files: %v", err)
 	}
 
 	if !isEqual {
-		return outcome, wrongAnswer, nil
+		return lastExecutedIndex, wrongAnswer, nil
 	}
 
 	return outcome, correctAnswer, nil

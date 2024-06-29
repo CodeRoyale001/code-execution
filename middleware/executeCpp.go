@@ -34,13 +34,13 @@ func RunCpp(codeBody string, testcases []models.TestCase) (int, string, error) {
 		return outcome, compileError, fmt.Errorf("failed to run executable: %v", err)
 	}
 	if outcome == len(testcases)-1 {
-		isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
+		lastIndex, isEqual, err := compareFile("./files/output.txt", "./files/expected_output.txt")
 		if err != nil {
-			return outcome, "", fmt.Errorf("failed to compare files: %v", err)
+			return lastIndex, "", fmt.Errorf("failed to compare files: %v", err)
 		}
 
 		if !isEqual {
-			return outcome, wrongAnswer, nil
+			return lastIndex, wrongAnswer, nil
 		}
 	}
 	return outcome, correctAnswer, nil
