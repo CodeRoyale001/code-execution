@@ -6,20 +6,19 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/low4ey/OJ/Golang-backend/config"
 	"github.com/low4ey/OJ/Golang-backend/routes"
 	"github.com/low4ey/OJ/Golang-backend/utils"
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
-	// port := os.Getenv("PORT")
-	config, err := config.LoadConfig(".")
-	if err != nil {
-		fmt.Println("Environment Variable Failed Loading")
-		os.Exit(1)
-	}
-	port := config.PORT
+	port := os.Getenv("PORT")
+	// config, err := config.LoadConfig(".")
+	// if err != nil {
+	// 	fmt.Println("Environment Variable Failed Loading")
+	// 	os.Exit(1)
+	// }
+	// port := config.PORT
 	if port == "" {
 		port = "8080"
 	}
