@@ -92,8 +92,18 @@ func GetSubByQuestionId() gin.HandlerFunc {
 		defer cancel()
 
 		quesId := c.Param("questionId")
+		userId := c.Query("userId")
 
-		cursor, err := SubmissionCollection.Find(ctx, bson.M{"questionid": quesId})
+		// Create the filter
+		filter := bson.M{"questionid": quesId}
+		if userId != "" {
+			filter["userid"] = userId
+		}
+
+		// Find options with sort
+		findOptions := options.Find().SetSort(bson.D{{Key: "submittime", Value: -1}})
+
+		cursor, err := SubmissionCollection.Find(ctx, filter, findOptions)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
 			return
@@ -130,7 +140,7 @@ func GetSubByUserId() gin.HandlerFunc {
 		}
 
 		// Define options to limit and sort the results
-		findOptions := options.Find().SetLimit(int64(limit)).SetSort(bson.D{{"_id", -1}}) // Sorting by _id descending
+		findOptions := options.Find().SetLimit(int64(limit)).SetSort(bson.D{{Key: "_id", Value: -1}}) // Sorting by _id descending
 
 		cursor, err := SubmissionCollection.Find(ctx, filter, findOptions)
 		if err != nil {

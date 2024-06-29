@@ -4,7 +4,7 @@ using namespace std;
 void solve()
 {
     int n, m, f[1000];
-    cin >> n >> m;
+    cin >> n >> m
     for (int i = 0; i < m; ++i)
     {
         cin >> f[i];
