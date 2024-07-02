@@ -77,6 +77,8 @@ func compareFile(fileOne string, fileTwo string) (int, bool, error) {
 
 func runExecutableWithTimeout(compiler string, fileAddress string, testCases []models.TestCase) (int, error) {
 	var cmd *exec.Cmd
+	done := make(chan error, 1)
+	lastExecutedIndex := -1
 
 	if compiler != "" {
 		cmd = exec.Command(compiler, fileAddress)
@@ -87,6 +89,7 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 	ctx, cancel := context.WithTimeout(context.Background(), timeLimit)
 	defer cancel()
 
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Stdout = &bytes.Buffer{}
 	cmd.Stderr = &bytes.Buffer{}
 	cmd.Stdin = nil // Clear the default standard input
@@ -102,22 +105,23 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 	}
 	defer outputFile.Close()
 
-	lastExecutedIndex := -1
-
-	done := make(chan error, 1)
-
 	go func() {
 		for i, tc := range testCases {
 			input := ""
 			if tc.Testcase != nil {
 				input = *tc.Testcase
 			}
+
+			testCtx, testCancel := context.WithTimeout(context.Background(), timeLimit)
+			defer testCancel()
+
 			if compiler != "" {
-				cmd = exec.CommandContext(ctx, compiler, fileAddress)
+				cmd = exec.CommandContext(testCtx, compiler, fileAddress)
 			} else {
-				cmd = exec.CommandContext(ctx, fileAddress)
+				cmd = exec.CommandContext(testCtx, fileAddress)
 			}
 
+			cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 			cmd.Stdin = strings.NewReader(input)
 
 			outputBuf := &bytes.Buffer{}
@@ -177,5 +181,3 @@ func WriteOutputToFile(testCases []models.TestCase) error {
 	}
 	return nil
 }
-
-//TEst
