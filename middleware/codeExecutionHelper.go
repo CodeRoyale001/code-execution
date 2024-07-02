@@ -114,8 +114,9 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 			}
 			if compiler != "" {
 				cmd = exec.CommandContext(ctx, compiler, fileAddress)
+			} else {
+				cmd = exec.CommandContext(ctx, fileAddress)
 			}
-			cmd = exec.CommandContext(ctx, fileAddress)
 
 			cmd.Stdin = strings.NewReader(input)
 
