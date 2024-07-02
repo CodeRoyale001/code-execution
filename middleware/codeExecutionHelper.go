@@ -79,9 +79,9 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 	var cmd *exec.Cmd
 
 	if compiler != "" {
-		cmd = exec.Command(compiler, fileAddress) // Execute the compiled executable using the specified compiler
+		cmd = exec.Command(compiler, fileAddress)
 	} else {
-		cmd = exec.Command(fileAddress) // Execute the file directly without a compiler
+		cmd = exec.Command(fileAddress)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeLimit)
@@ -112,25 +112,29 @@ func runExecutableWithTimeout(compiler string, fileAddress string, testCases []m
 			if tc.Testcase != nil {
 				input = *tc.Testcase
 			}
+			if compiler != "" {
+				cmd = exec.CommandContext(ctx, compiler, fileAddress)
+			}
+			cmd = exec.CommandContext(ctx, fileAddress)
 
-			cmd = exec.CommandContext(ctx, fileAddress) // Re-create the command with the updated context
-			cmd.Stdin = strings.NewReader(input)        // Set the current input
+			cmd.Stdin = strings.NewReader(input)
 
 			outputBuf := &bytes.Buffer{}
 			cmd.Stdout = outputBuf
-			cmd.Stderr = &bytes.Buffer{} // Capture standard error, if needed
+			errorBuf := &bytes.Buffer{}
+			cmd.Stderr = errorBuf
 
 			err := cmd.Run()
 			if err != nil {
 				if exitErr, ok := err.(*exec.ExitError); ok {
 					if status, ok := exitErr.Sys().(syscall.WaitStatus); ok {
 						if status.Signaled() && (status.Signal() == syscall.SIGXCPU || status.Signal() == syscall.SIGSEGV) {
-							done <- fmt.Errorf("execution error: %v", err)
+							done <- fmt.Errorf("execution error 1: %v", err)
 							return
 						}
 					}
 				}
-				done <- fmt.Errorf("execution error: %v", err)
+				done <- fmt.Errorf("execution error 2: %v", err)
 				return
 			}
 
