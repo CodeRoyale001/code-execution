@@ -7,7 +7,7 @@ import (
 )
 
 func CORSMiddleware() func(c *gin.Context) {
-	allowedOrigins := []string{"http://localhost:3000", "https://serene-fortress-91389-77d1fb95872a.herokuapp.com", "https://coderoyale.vercel.app/"}
+	allowedOrigins := []string{"http://localhost:3000", "https://serene-fortress-91389-77d1fb95872a.herokuapp.com", "https://coderoyale.vercel.app"}
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
 
