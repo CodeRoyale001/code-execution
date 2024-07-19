@@ -64,6 +64,45 @@ func Submit() gin.HandlerFunc {
 	}
 }
 
+func Run() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
+		defer cancel()
+
+		var submission models.Submission
+		if err := c.BindJSON(&submission); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		testCaseURL := "https://serene-fortress-91389-77d1fb95872a.herokuapp.com/api/getTestCase/" + *submission.QuestionId
+		sampleTestcase, testCaseErr := getSampleTestCase(testCaseURL)
+		if testCaseErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": testCaseErr.Error()})
+			return
+		}
+
+		if err := middleware.WriteOutputToFile(sampleTestcase); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		submission.SubmitTime = time.Now()
+
+		outcome, status, codeErr := middleware.ExecuteCode(*submission.Code, *submission.Language, sampleTestcase)
+		if codeErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": codeErr.Error()})
+			return
+		}
+
+		submission.Status = &status
+		submission.LastExecutedIndex = outcome
+		submission.Id = primitive.NewObjectID()
+
+		c.JSON(http.StatusCreated, gin.H{"data": submission})
+	}
+}
+
 func GetAllSub() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
